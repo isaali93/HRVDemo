@@ -174,6 +174,7 @@ public class DeviceScanActivity extends ListActivity {
         intent.putExtra(DeviceServicesActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(DeviceServicesActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         startActivity(intent);
+        Toast.makeText(this, device.getName() + " Connected", Toast.LENGTH_SHORT).show();
     }
 
     private void init() {

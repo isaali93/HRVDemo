@@ -26,7 +26,7 @@
     <string name="disconnected">Disconnected</string>
     <string name="title_devices">CO3320 Prototype</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
-    <string name="device_connected">Smart Device Connected</string>
+    <string name="device_connected">CO3320 Prototype</string>
 
     <string name="action_demo">Animate</string>
 
