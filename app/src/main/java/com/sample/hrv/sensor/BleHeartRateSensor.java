@@ -4,6 +4,7 @@ package com.sample.hrv.sensor;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.util.Log;
 
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
 /**
@@ -78,10 +79,30 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
         return true;
     }
 
+
+	float minHR = Float.MAX_VALUE;
+	float maxHR = Float.MIN_VALUE;
+	float avgHR = 0;
+	float sumHR = 0;
+	float avg = 0;
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
-		return "Heart Rate=" + data[0] + " bpm" + "\nHR Variance=" + data[1] + " ms";
+		if (data[0] < minHR){
+			minHR = data[0];
+		}
+		if(data[0] > maxHR){
+			maxHR = data[0];
+		}
+		avg = avg + 1;
+		sumHR = sumHR + data[0];
+		avgHR = sumHR/avg;
+
+		int avgHRInteger = (int)(Math.round(avgHR));
+
+		return "Heart Rate=" + data[0] + " bpm" + "\nHR Variance=" + data[1] + " ms"
+			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
+				+ "\nAvg HR=" + avgHRInteger + " bpm";
 	}
 
 	@Override
