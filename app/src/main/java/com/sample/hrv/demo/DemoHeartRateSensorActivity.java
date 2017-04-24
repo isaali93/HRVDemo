@@ -40,8 +40,8 @@ public class DemoHeartRateSensorActivity extends DemoSensorActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.demo_opengl);
-		view = (GLSurfaceView) findViewById(R.id.gl);
+		//setContentView(R.layout.demo_opengl);
+		//view = (GLSurfaceView) findViewById(R.id.gl);
 
 		getActionBar().setTitle(R.string.title_demo_heartrate);
 
@@ -50,7 +50,7 @@ public class DemoHeartRateSensorActivity extends DemoSensorActivity {
 		renderer = new PolygonRenderer(this);
 		view.setRenderer(renderer);
 		//view.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-		// Render when hear rate data is updated
+		// Render when heart rate data is updated
 		view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 

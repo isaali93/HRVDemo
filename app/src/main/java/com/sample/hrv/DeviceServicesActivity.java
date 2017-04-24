@@ -17,11 +17,13 @@
 package com.sample.hrv;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -64,8 +66,8 @@ public class DeviceServicesActivity extends Activity {
     private TextView dataField;
     private TextView heartRateField;
     private TextView intervalField;
-    private Button demoButton;
-    
+    //private Button demoButton;
+
     private ExpandableListView gattServicesList;
     private BleServicesAdapter gattServiceAdapter;
 
@@ -76,7 +78,7 @@ public class DeviceServicesActivity extends Activity {
 
     private BleSensor<?> activeSensor;
     private BleSensor<?> heartRateSensor;
-    
+
 	private OnServiceItemClickListener serviceListener;
 
     // Code to manage Service lifecycle.
@@ -168,19 +170,12 @@ public class DeviceServicesActivity extends Activity {
             final BleSensor<?> sensor = BleSensors.getSensor(service.getUuid().toString());
             if (sensor == null)
                 return;
-
-            final Class<? extends DemoSensorActivity> demoClass;
-            if (sensor instanceof BleHeartRateSensor)
-                demoClass = DemoHeartRateSensorActivity.class;
-            else
-                return;
-
             final Intent demoIntent = new Intent();
-            demoIntent.setClass(DeviceServicesActivity.this, demoClass);
             demoIntent.putExtra(DemoSensorActivity.EXTRAS_DEVICE_ADDRESS, deviceAddress);
             demoIntent.putExtra(DemoSensorActivity.EXTRAS_SENSOR_UUID, service.getUuid().toString());
             startActivity(demoIntent);
         }
+
 
         @Override
         public void onServiceEnabled(BluetoothGattService service, boolean enabled) {
@@ -237,9 +232,11 @@ public class DeviceServicesActivity extends Activity {
         dataField = (TextView) findViewById(R.id.data_value);
 		heartRateField = (TextView) findViewById(R.id.heartrate_value);
 
-		demoButton = (Button) findViewById(R.id.demo);
+		//demoButton = (Button) findViewById(R.id.demo);
 
+		/*
 		demoButton.setOnClickListener(new View.OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick serviceListener: "+serviceListener);
@@ -250,9 +247,10 @@ public class DeviceServicesActivity extends Activity {
 				Log.d(TAG, "set service listener");
 			}
 		});
+        */
 
-		demoButton.setVisibility(View.VISIBLE);
-        
+		//demoButton.setVisibility(View.VISIBLE);
+
         getActionBar().setTitle(R.string.device_connected);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -284,19 +282,6 @@ public class DeviceServicesActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.gatt_services, menu);
-        if (isConnected) {
-            menu.findItem(R.id.menu_connect).setVisible(false);
-            menu.findItem(R.id.menu_disconnect).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_connect).setVisible(true);
-            menu.findItem(R.id.menu_disconnect).setVisible(false);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu_connect:
@@ -310,6 +295,24 @@ public class DeviceServicesActivity extends Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("")
+                .setMessage("Connect to a different device?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void updateConnectionState(final int resourceId) {
@@ -356,12 +359,12 @@ public class DeviceServicesActivity extends Activity {
 
 		heartRateSensor = sensor;
 		bleService.enableSensor(sensor, true);
-		
+
         this.setServiceListener(demoClickListener);
 
 		return true;
 	}
-	
+
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null)
             return;

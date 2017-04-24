@@ -95,22 +95,8 @@
                 android:text="@string/no_data"
                 android:minLines="1"/>
      </LinearLayout>
-     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
-        <Button
-            android:id="@+id/demo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_demo"
-            android:clickable="false"
-            android:focusable="false"
-            style="@style/Widget.AppCompat.Button" />
-     </LinearLayout>
-     <TextView
+
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/label_services"

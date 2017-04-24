@@ -85,6 +85,10 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 	float avgHR = 0;
 	float sumHR = 0;
 	float avg = 0;
+
+	float maxHRV = Float.MIN_VALUE;
+	float minHRV = Float.MAX_VALUE;
+
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
@@ -100,9 +104,18 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 
 		int avgHRInteger = (int)(Math.round(avgHR));
 
-		return "Heart Rate=" + data[0] + " bpm" + "\nHR Variance=" + data[1] + " ms"
+
+		if (data[1] < minHRV){
+			minHRV = data[1];
+		}
+		if(data[1] > maxHRV){
+			maxHRV = data[1];
+		}
+		return "Heart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
-				+ "\nAvg HR=" + avgHRInteger + " bpm";
+				+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
+				+ "\nHR Variance=" + data[1] + " ms"
+				+ "\nMin HRV=" + minHRV + " ms" + "\nMax HRV=" + maxHRV + " ms";
 	}
 
 	@Override

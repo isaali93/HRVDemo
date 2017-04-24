@@ -129,6 +129,7 @@ public class BleServicesAdapter extends BaseExpandableListAdapter {
 		return true;
 	}
 
+	//Viewholder for displaying services
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
@@ -175,12 +176,15 @@ public class BleServicesAdapter extends BaseExpandableListAdapter {
 
 		holder.name.setText(serviceName);
 		holder.uuid.setText(uuid);
+		/*
 		if (isDemoable(sensor)) {
 			holder.demo.setTag(item);
 			holder.demo.setVisibility(View.VISIBLE);
 		} else {
 			holder.demo.setVisibility(View.GONE);
 		}
+		*/
+		holder.demo.setVisibility(View.GONE);
 
 		return convertView;
 	}
