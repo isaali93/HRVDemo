@@ -4,6 +4,8 @@ package com.sample.hrv.sensor;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.util.Log;
 
+import com.sample.hrv.HRVCalculation;
+
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
@@ -86,8 +88,11 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 	float sumHR = 0;
 	float avg = 0;
 
-	float maxHRV = Float.MIN_VALUE;
-	float minHRV = Float.MAX_VALUE;
+	float maxRR = Float.MIN_VALUE;
+	float minRR = Float.MAX_VALUE;
+
+	int [] RR = new int[3];
+	int [] HRV = new int[2];
 
 	@Override
 	public String getDataString() {
@@ -105,17 +110,43 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 		int avgHRInteger = (int)(Math.round(avgHR));
 
 
-		if (data[1] < minHRV){
-			minHRV = data[1];
+		if (data[1] < minRR){
+			minRR = data[1];
 		}
-		if(data[1] > maxHRV){
-			maxHRV = data[1];
+		if(data[1] > maxRR){
+			maxRR = data[1];
 		}
+
+		if(RR == null || RR.length == 0){
+			RR [0] = (int)data[1];
+			RR [1] = 0;
+			RR [2] = 0;
+		}else if (RR.length == 1) {
+			RR[1] = (int)data[1];
+		}else if (RR.length == 2) {
+			RR [2] = (int)data[1];
+		}else{
+			RR [0] = RR[1];
+			RR [1] = RR[2];
+			RR [2] = (int)data[1];
+		}
+
+		HRVCalculation hrv = new HRVCalculation();
+
+		HRV = hrv.HRVCalculation(RR);
+
+
 		return "Heart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
 				+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
-				+ "\nHR Variance=" + data[1] + " ms"
-				+ "\nMin HRV=" + minHRV + " ms" + "\nMax HRV=" + maxHRV + " ms";
+				+ "\nR-R Interval=" + data[1] + " ms"
+				+ "\nMin RR=" + minRR + " ms" + "\nMax RR=" + maxRR + " ms" + "\n"
+				+ "\n1st RR Value=" + RR[0] + " ms"
+				+ "\n2nd RR Value=" + RR[1] + "  ms"
+				+ "\n3rd RR Value=" + RR[2] + "  ms"
+				+ "\nRMSSD=" + HRV[0] + " ms"
+				//+ "\nAvg HRV=" + HRV[1] + " ms"
+				;
 	}
 
 	@Override
