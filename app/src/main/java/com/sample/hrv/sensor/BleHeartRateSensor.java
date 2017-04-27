@@ -3,7 +3,7 @@ package com.sample.hrv.sensor;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.util.Log;
-
+import java.util.ArrayList;
 import com.sample.hrv.HRVCalculation;
 
 import static java.lang.Math.max;
@@ -91,9 +91,10 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 	float maxRR = Float.MIN_VALUE;
 	float minRR = Float.MAX_VALUE;
 
-	int [] RR = new int[3];
-	int [] HRV = new int[2];
-
+	//int [] RR = new int[3];
+	//int [] HRV = new int[2];
+	ArrayList<Float> RRValues = new ArrayList<Float>();
+	int [] HRV = new int[3];
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
@@ -117,6 +118,7 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 			maxRR = data[1];
 		}
 
+		/*
 		if(RR == null || RR.length == 0){
 			RR [0] = (int)data[1];
 			RR [1] = 0;
@@ -130,22 +132,41 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 			RR [1] = RR[2];
 			RR [2] = (int)data[1];
 		}
+		HRV = hrv.HRVCalculation(RR);
+		*/
 
 		HRVCalculation hrv = new HRVCalculation();
-
-		HRV = hrv.HRVCalculation(RR);
-
+		RRValues.add(data[1]);
+		if(RRValues.size() > 300){
+			HRV = hrv.HRVCalculation(RRValues);
+			RRValues.clear();
+			/*
+			return "Heart Rate=" + data[0] + " bpm"
+					+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
+					+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
+					+ "\nR-R Interval=" + data[1] + " ms"
+					+ "\nMin RR=" + minRR + " ms" + "\nMax RR=" + maxRR + " ms" + "\n"
+					//+ "\n1st RR Value=" + RR[0] + " ms"
+					//+ "\n2nd RR Value=" + RR[1] + "  ms"
+					//+ "\n3rd RR Value=" + RR[2] + "  ms"
+					+ "\nHRV=" + HRV + " ms"
+					//+ "\nAvg HRV=" + HRV[1] + " ms"
+					;
+					*/
+		}
 
 		return "Heart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
 				+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
 				+ "\nR-R Interval=" + data[1] + " ms"
 				+ "\nMin RR=" + minRR + " ms" + "\nMax RR=" + maxRR + " ms" + "\n"
-				+ "\n1st RR Value=" + RR[0] + " ms"
-				+ "\n2nd RR Value=" + RR[1] + "  ms"
-				+ "\n3rd RR Value=" + RR[2] + "  ms"
-				+ "\nRMSSD=" + HRV[0] + " ms"
-				//+ "\nAvg HRV=" + HRV[1] + " ms"
+				//+ "\n1st RR Value=" + RR[0] + " ms"
+				//+ "\n2nd RR Value=" + RR[1] + "  ms"
+				//+ "\n3rd RR Value=" + RR[2] + "  ms"
+				//+ "\nHRV=" + HRV + " ms"
+				+ "\nMRR=" + HRV[0] + " ms"
+				+ "\nSDNN=" + HRV[1] + " ms"
+				+ "\nRMSSD=" + HRV[2] + " ms"
 				;
 	}
 
