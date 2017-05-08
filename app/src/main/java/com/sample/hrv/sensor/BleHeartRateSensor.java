@@ -148,14 +148,14 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 				stressThreshold++;
 				if(stressThreshold > 1800) {
 					DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
-					DeviceServicesActivity.stress_text.setText("Stress Level is High");
 				}
+				DeviceServicesActivity.stress_text.setText("Stress Level is High");
 			}else{
-				stressThreshold--;
-				if(stressThreshold < 1600) {
-					DeviceServicesActivity.stress_text.setText("Stress Level is Good");
+				if(stressThreshold < 1600 && stressThreshold > 0) {
+					stressThreshold--;
 					DeviceServicesActivity.nm.cancel(45612);
 				}
+				DeviceServicesActivity.stress_text.setText("Stress Level is Good");
 			}
 		}
 
