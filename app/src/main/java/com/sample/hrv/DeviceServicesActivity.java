@@ -239,7 +239,7 @@ public class DeviceServicesActivity extends Activity {
         stress_breathing = (TextView)findViewById(R.id.stress_breathing);
         stress_walk = (TextView)findViewById(R.id.stress_walk);
 
-        stress_text.setText("Testing Stress Level..");
+        stress_text.setText("Testing Stress Level.." + "\nThis may take 2 minutes.");
 
         final Intent intent = getIntent();
         deviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);

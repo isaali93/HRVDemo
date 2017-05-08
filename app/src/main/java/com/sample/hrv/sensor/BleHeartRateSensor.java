@@ -137,9 +137,8 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 		HRVCalculation hrv = new HRVCalculation();
 		RRValues.add(data[1]);
 
-		if(RRValues.size() > 2){
+		if(RRValues.size() > 300){
 			HRVValues = hrv.HRVCalculation(RRValues);
-			//RRValues.clear();
 			if(HRVValues[2] < 15){
 				DeviceServicesActivity.stress_text.setText("Stress Level is High");
 				DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
