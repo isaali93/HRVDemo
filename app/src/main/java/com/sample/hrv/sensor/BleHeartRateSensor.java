@@ -105,7 +105,12 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 	int [] HRVValues = new int[3];
 	int [] HRV = new int [7];
 
+	ArrayList <Integer> RMSSD = new ArrayList<Integer>();
+	ArrayList <Integer> SDNN = new ArrayList<Integer>();
+
 	String Playlist = "<a href='https://www.youtube.com/watch?v=lTZ8gQD4vSk'> Try some soothing music and images. </a>";
+
+	int stressThreshold = 0;
 
 	@Override
 	public String getDataString() {
@@ -140,23 +145,31 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 		if(RRValues.size() > 300){
 			HRVValues = hrv.HRVCalculation(RRValues);
 			if(HRVValues[2] < 15){
-				DeviceServicesActivity.stress_text.setText("Stress Level is High");
-				DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+				stressThreshold++;
+				if(stressThreshold > 1800){
+					DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+					DeviceServicesActivity.stress_text.setText("Stress Level is High");
+				}
 			}else{
+				stressThreshold--;
 				DeviceServicesActivity.stress_text.setText("Stress Level is Good");
 				DeviceServicesActivity.nm.cancel(45612);
 			}
 		}
 
-		if(RRValues.size() == 10800){
+		if(RRValues.size() == 7200){
+			RMSSD.add(HRVValues[2]);
+			SDNN.add(HRVValues[1]);
 			RRValues.clear();
 		}
+
+
 
 		return "\nHeart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
 				//+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
 				+ "\n"
-				//+ "\nR-R Interval=" + data[1] + " ms"
+				+ "\nR-R Interval=" + data[1] + " ms"
 				//+ "\nMRR=" + HRVValues[0] + " ms"
 				+ "\nSDNN=" + HRVValues[1] + " ms"
 				+ "\nRMSSD=" + HRVValues[2] + " ms"

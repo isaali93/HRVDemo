@@ -18,6 +18,7 @@ package com.sample.hrv;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -261,6 +262,7 @@ public class DeviceServicesActivity extends Activity {
         notification.setWhen(System.currentTimeMillis());
         notification.setContentTitle("Your Stress Level is High!");
         notification.setContentText("Please open application for some tips to manage it.");
+        notification.setDefaults(Notification.DEFAULT_ALL);
 
         Intent notificationIntent = new Intent(this, DeviceServicesActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 /**
  * Created by isaali93 on 25/04/2017.
+ * This class receives the list or R-R intervals and calculates 3 metrics:
+ * Mean RR Interval, Standard Deviation of R-R Intervals and Root Mean Square or Successive Intervals.
+ * SDNN and RMSSD are the two important metrics in measuring HRV.
  */
 
 public class HRVCalculation implements Runnable {
