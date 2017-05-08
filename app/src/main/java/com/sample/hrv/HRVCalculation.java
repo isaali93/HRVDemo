@@ -40,7 +40,6 @@ public class HRVCalculation implements Runnable {
             SDNNTotal += Math.pow(RRValues.get(i) - MRR, 2);
         }
         SDNN = (float)Math.sqrt(SDNNTotal/(RRValues.size()-1));
-        //HRV [1] = (int)SDNN;
         HRV [1] = (int)SDNN;
 
         for(int i = 1; i<RRValues.size(); i++){
@@ -52,23 +51,7 @@ public class HRVCalculation implements Runnable {
         RRDDiv = RRDSum/RRValues.size();
         RMSSD = (float)Math.sqrt(RRDDiv);
         HRV[2] = (int)RMSSD;
-        /*
-        int RRDifference1 = Math.abs(RR[0] - RR[1]);
-        int RRDifference2 = Math.abs(RR[1] - RR[2]);
-        RRDifference1 =(int)(Math.pow(RRDifference1, 2));
-        RRDifference2 =(int)(Math.pow(RRDifference2, 2));
-        int RRSum = RRDifference1 + RRDifference2;
-        HRV [0] = (int)Math.sqrt(RRSum/2);
-        RRValues.add(HRV[0]);
-        /*
-        int AverageRMSSD = 0;
-        int sumRMSSD = 0;
-        for(int i = 0; i<RRValues.size(); i++){
-            sumRMSSD = sumRMSSD + RRValues.get(i);
-        }
-        AverageRMSSD = sumRMSSD/RRValues.size();
-        HRV[1] = AverageRMSSD;
-        */
+
         return HRV;
     }
 

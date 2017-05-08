@@ -43,4 +43,8 @@
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
+    <string name="stress_level">Test</string>
+    <string name="stress_relief">Test</string>
+    <string name="stress_breathing">Try some deep breathing exercises.</string>
+    <string name="stress_walk">How about a little walk outdoors?</string>
 </resources>

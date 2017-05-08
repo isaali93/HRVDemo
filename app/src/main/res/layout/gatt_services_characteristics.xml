@@ -15,29 +15,35 @@
 -->
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="10dp">
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+    android:weightSum="1">
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_device_address"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:layout_marginRight="5dp"/>
+
         <TextView
                 android:id="@+id/device_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceMedium"/>
     </LinearLayout>
-   <LinearLayout
+
+    <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,32 +61,27 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceMedium"/>
     </LinearLayout>
+
+    <ExpandableListView
+            android:id="@+id/gatt_services_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:groupIndicator="@null"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:text="@string/label_data"
-                android:layout_marginRight="5dp"/>
-        <TextView
-                android:id="@+id/data_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:text="@string/no_data"
-                android:minLines="3"/>
-     </LinearLayout>
-     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+        android:paddingStart="5dp"
+        android:layout_height="200dp">
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,19 +98,48 @@
      </LinearLayout>
 
     <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_services"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textStyle="bold"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:background="@android:drawable/divider_horizontal_bright" />
-    <ExpandableListView
-            android:id="@+id/gatt_services_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:groupIndicator="@null"/> 
+        android:text="Stress Level: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView6"
+        android:textAlignment="textStart"
+        android:layout_marginStart="5dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stress_level"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:text="Stressed?"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView9"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:text="@string/stress_breathing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stress_breathing"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:text="@string/stress_walk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stress_walk"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:text="Try some calming music."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stress_relief"
+        android:layout_marginStart="5dp" />
+
 </LinearLayout>

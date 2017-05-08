@@ -2,9 +2,19 @@ package com.sample.hrv.sensor;
 
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.support.v4.app.NotificationCompat;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
+
 import java.util.ArrayList;
+
+import com.sample.hrv.DeviceScanActivity;
+import com.sample.hrv.DeviceServicesActivity;
 import com.sample.hrv.HRVCalculation;
+
+import org.w3c.dom.Text;
 
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
@@ -91,10 +101,12 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 	float maxRR = Float.MIN_VALUE;
 	float minRR = Float.MAX_VALUE;
 
-	//int [] RR = new int[3];
-	//int [] HRV = new int[2];
 	ArrayList<Float> RRValues = new ArrayList<Float>();
-	int [] HRV = new int[3];
+	int [] HRVValues = new int[3];
+	int [] HRV = new int [7];
+
+	String Playlist = "<a href='https://www.youtube.com/watch?v=lTZ8gQD4vSk'> Try some soothing music and images. </a>";
+
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
@@ -118,55 +130,44 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 			maxRR = data[1];
 		}
 
-		/*
-		if(RR == null || RR.length == 0){
-			RR [0] = (int)data[1];
-			RR [1] = 0;
-			RR [2] = 0;
-		}else if (RR.length == 1) {
-			RR[1] = (int)data[1];
-		}else if (RR.length == 2) {
-			RR [2] = (int)data[1];
-		}else{
-			RR [0] = RR[1];
-			RR [1] = RR[2];
-			RR [2] = (int)data[1];
-		}
-		HRV = hrv.HRVCalculation(RR);
-		*/
+		DeviceServicesActivity.stress_tips.setClickable(true);
+		DeviceServicesActivity.stress_tips.setMovementMethod(LinkMovementMethod.getInstance());
+		DeviceServicesActivity.stress_tips.setText(Html.fromHtml(Playlist));
 
 		HRVCalculation hrv = new HRVCalculation();
 		RRValues.add(data[1]);
-		if(RRValues.size() > 300){
-			HRV = hrv.HRVCalculation(RRValues);
-			RRValues.clear();
-			/*
-			return "Heart Rate=" + data[0] + " bpm"
-					+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
-					+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
-					+ "\nR-R Interval=" + data[1] + " ms"
-					+ "\nMin RR=" + minRR + " ms" + "\nMax RR=" + maxRR + " ms" + "\n"
-					//+ "\n1st RR Value=" + RR[0] + " ms"
-					//+ "\n2nd RR Value=" + RR[1] + "  ms"
-					//+ "\n3rd RR Value=" + RR[2] + "  ms"
-					+ "\nHRV=" + HRV + " ms"
-					//+ "\nAvg HRV=" + HRV[1] + " ms"
-					;
-					*/
+		if(RRValues.size() > 2){
+			HRVValues = hrv.HRVCalculation(RRValues);
+			//RRValues.clear();
+			if(HRVValues[2] < 15){
+				DeviceServicesActivity.stress_text.setText("Stress Level is High");
+				DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+			}else{
+				DeviceServicesActivity.stress_text.setText("Stress Level is Good");
+				DeviceServicesActivity.nm.cancel(45612);
+			}
+		}else{
+			if(RRValues.size() == 10800){
+				HRVValues = hrv.HRVCalculation(RRValues);
+				RRValues.clear();
+				if(HRVValues[2] < 15){
+					DeviceServicesActivity.stress_text.setText("Stress Level is High");
+					DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+				}else{
+					DeviceServicesActivity.stress_text.setText("Stress Level is Good");
+					DeviceServicesActivity.nm.cancel(45612);
+				}
+			}
 		}
 
-		return "Heart Rate=" + data[0] + " bpm"
+		return "\nHeart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
-				+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
+				//+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
+				+ "\n"
 				+ "\nR-R Interval=" + data[1] + " ms"
-				+ "\nMin RR=" + minRR + " ms" + "\nMax RR=" + maxRR + " ms" + "\n"
-				//+ "\n1st RR Value=" + RR[0] + " ms"
-				//+ "\n2nd RR Value=" + RR[1] + "  ms"
-				//+ "\n3rd RR Value=" + RR[2] + "  ms"
-				//+ "\nHRV=" + HRV + " ms"
-				+ "\nMRR=" + HRV[0] + " ms"
-				+ "\nSDNN=" + HRV[1] + " ms"
-				+ "\nRMSSD=" + HRV[2] + " ms"
+				//+ "\nMRR=" + HRVValues[0] + " ms"
+				+ "\nSDNN=" + HRVValues[1] + " ms"
+				+ "\nRMSSD=" + HRVValues[2] + " ms"
 				;
 	}
 

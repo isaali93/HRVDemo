@@ -184,6 +184,8 @@ public class BleServicesAdapter extends BaseExpandableListAdapter {
 			holder.demo.setVisibility(View.GONE);
 		}
 		*/
+		holder.name.setVisibility(View.GONE);
+		holder.uuid.setVisibility(View.GONE);
 		holder.demo.setVisibility(View.GONE);
 
 		return convertView;
@@ -270,6 +272,9 @@ public class BleServicesAdapter extends BaseExpandableListAdapter {
 		holder.name.setText(name);
 		holder.uuid.setText(uuid);
 		holder.modes.setText(modes);
+		holder.name.setVisibility(View.GONE);
+		holder.uuid.setVisibility(View.GONE);
+		holder.modes.setVisibility(View.GONE);
 
 		return convertView;
 	}

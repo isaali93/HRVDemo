@@ -18,6 +18,8 @@ package com.sample.hrv;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -29,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +61,14 @@ import com.sample.hrv.sensor.BleSensors;
  */
 public class DeviceServicesActivity extends Activity {
     private final static String TAG = DeviceServicesActivity.class.getSimpleName();
+
+    public static NotificationCompat.Builder notification;
+    public static NotificationManager nm;
+
+    public static TextView stress_text;
+    public static TextView stress_tips;
+    public static TextView stress_breathing;
+    public static TextView stress_walk;
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -206,19 +217,29 @@ public class DeviceServicesActivity extends Activity {
     };
 
     private void clearUI() {
-        gattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        dataField.setText(R.string.no_data);
+        //gattServicesList.setAdapter((SimpleExpandableListAdapter) null);
+        //.setText(R.string.no_data);
 		heartRateField.setText(R.string.no_data);
 		intervalField.setText(R.string.no_data);
     }
 
+    /*
 	public void setServiceListener(OnServiceItemClickListener listener) {
 		this.serviceListener = listener;
 	}
+	*/
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gatt_services_characteristics);
+
+        stress_text = (TextView)findViewById(R.id.stress_level);
+        stress_tips = (TextView)findViewById(R.id.stress_relief);
+        stress_breathing = (TextView)findViewById(R.id.stress_breathing);
+        stress_walk = (TextView)findViewById(R.id.stress_walk);
+
+        stress_text.setText("Testing Stress Level..");
 
         final Intent intent = getIntent();
         deviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -229,27 +250,24 @@ public class DeviceServicesActivity extends Activity {
         gattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
         gattServicesList.setOnChildClickListener(servicesListClickListner);
         connectionState = (TextView) findViewById(R.id.connection_state);
-        dataField = (TextView) findViewById(R.id.data_value);
+        //dataField = (TextView) findViewById(R.id.data_value);
 		heartRateField = (TextView) findViewById(R.id.heartrate_value);
 
-		//demoButton = (Button) findViewById(R.id.demo);
+        notification = new NotificationCompat.Builder(this);
+        notification.setAutoCancel(true);
 
-		/*
-		demoButton.setOnClickListener(new View.OnClickListener() {
+        notification.setSmallIcon(R.drawable.ic_launcher);
+        notification.setTicker("HRV Stress Demo");
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("Your Stress Level is High!");
+        notification.setContentText("Please open application for some tips to manage it.");
 
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "onClick serviceListener: "+serviceListener);
-				if (serviceListener == null)
-					return;
-				final BluetoothGattService service = gattServiceAdapter.getHeartRateService();
-				serviceListener.onDemoClick(service);
-				Log.d(TAG, "set service listener");
-			}
-		});
-        */
+        Intent notificationIntent = new Intent(this, DeviceServicesActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent);
 
-		//demoButton.setVisibility(View.VISIBLE);
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         getActionBar().setTitle(R.string.device_connected);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -329,7 +347,7 @@ public class DeviceServicesActivity extends Activity {
 			if (uuid.equals(BleHeartRateSensor.getServiceUUIDString())) {
 				heartRateField.setText(data);
 			} else {
-				dataField.setText(data);
+				//dataField.setText(data);
 			}
 		}
     }
@@ -360,7 +378,7 @@ public class DeviceServicesActivity extends Activity {
 		heartRateSensor = sensor;
 		bleService.enableSensor(sensor, true);
 
-        this.setServiceListener(demoClickListener);
+        //this.setServiceListener(demoClickListener);
 
 		return true;
 	}
@@ -370,7 +388,7 @@ public class DeviceServicesActivity extends Activity {
             return;
 
         gattServiceAdapter = new BleServicesAdapter(this, gattServices);
-        gattServiceAdapter.setServiceListener(demoClickListener);
+        //gattServiceAdapter.setServiceListener(demoClickListener);
         gattServicesList.setAdapter(gattServiceAdapter);
     }
 
@@ -382,4 +400,5 @@ public class DeviceServicesActivity extends Activity {
         intentFilter.addAction(BleService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
+
 }
