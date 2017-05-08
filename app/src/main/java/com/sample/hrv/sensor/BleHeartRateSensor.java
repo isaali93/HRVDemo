@@ -136,6 +136,7 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 
 		HRVCalculation hrv = new HRVCalculation();
 		RRValues.add(data[1]);
+
 		if(RRValues.size() > 2){
 			HRVValues = hrv.HRVCalculation(RRValues);
 			//RRValues.clear();
@@ -146,25 +147,17 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 				DeviceServicesActivity.stress_text.setText("Stress Level is Good");
 				DeviceServicesActivity.nm.cancel(45612);
 			}
-		}else{
-			if(RRValues.size() == 10800){
-				HRVValues = hrv.HRVCalculation(RRValues);
-				RRValues.clear();
-				if(HRVValues[2] < 15){
-					DeviceServicesActivity.stress_text.setText("Stress Level is High");
-					DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
-				}else{
-					DeviceServicesActivity.stress_text.setText("Stress Level is Good");
-					DeviceServicesActivity.nm.cancel(45612);
-				}
-			}
+		}
+
+		if(RRValues.size() == 10800){
+			RRValues.clear();
 		}
 
 		return "\nHeart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
 				//+ "\nAvg HR=" + avgHRInteger + " bpm" + "\n"
 				+ "\n"
-				+ "\nR-R Interval=" + data[1] + " ms"
+				//+ "\nR-R Interval=" + data[1] + " ms"
 				//+ "\nMRR=" + HRVValues[0] + " ms"
 				+ "\nSDNN=" + HRVValues[1] + " ms"
 				+ "\nRMSSD=" + HRVValues[2] + " ms"
