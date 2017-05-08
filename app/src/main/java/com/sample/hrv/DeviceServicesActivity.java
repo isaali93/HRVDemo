@@ -262,7 +262,7 @@ public class DeviceServicesActivity extends Activity {
         notification.setWhen(System.currentTimeMillis());
         notification.setContentTitle("Your Stress Level is High!");
         notification.setContentText("Please open application for some tips to manage it.");
-        notification.setDefaults(Notification.DEFAULT_ALL);
+        notification.setDefaults(Notification.DEFAULT_VIBRATE);
 
         Intent notificationIntent = new Intent(this, DeviceServicesActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
