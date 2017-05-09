@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -54,13 +55,14 @@ public class DeviceScanActivity extends ListActivity {
 
     private BleDevicesAdapter leDeviceListAdapter;
     private BluetoothAdapter bluetoothAdapter;
+    private Handler mHandler;
     private Scanner scanner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle(R.string.title_devices);
-
+        mHandler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -215,7 +217,6 @@ public class DeviceScanActivity extends ListActivity {
     private static class Scanner extends Thread {
         private final BluetoothAdapter bluetoothAdapter;
         private final BluetoothAdapter.LeScanCallback mLeScanCallback;
-
         private volatile boolean isScanning = false;
 
         Scanner(BluetoothAdapter adapter, BluetoothAdapter.LeScanCallback callback) {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.sample.hrv.ActivityRecognizedService;
 import com.sample.hrv.DeviceScanActivity;
 import com.sample.hrv.DeviceServicesActivity;
 import com.sample.hrv.HRVCalculation;
@@ -112,6 +113,8 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 
 	int stressThreshold = 0;
 
+	boolean isUserStill = false;
+
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
@@ -140,32 +143,48 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 		DeviceServicesActivity.stress_tips.setText(Html.fromHtml(Playlist));
 
 		HRVCalculation hrv = new HRVCalculation();
-		RRValues.add(data[1]);
 
-		if(RRValues.size() > 300){
-			HRVValues = hrv.HRVCalculation(RRValues);
-			if(HRVValues[2] < 15){
-				stressThreshold++;
-				if(stressThreshold > 1800) {
-					DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+
+		isUserStill = ActivityRecognizedService.getActivityStatus();
+		if(isUserStill == true){
+			DeviceServicesActivity.recordingStatus.setContentTitle( "Recording HRV" );
+			DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.recordingStatus.build());
+			RRValues.add(data[1]);
+
+			if(RRValues.size() > 120){
+				HRVValues = hrv.HRVCalculation(RRValues);
+				if(HRVValues[2] < 15){
+					if(stressThreshold < 330) {
+						stressThreshold++;
+					}
+					if(stressThreshold > 300) {
+						DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.notification.build());
+					}
+					DeviceServicesActivity.stress_text.setText("Stress Level is High");
+				}else{
+					if(stressThreshold > 0) {
+						stressThreshold--;
+						DeviceServicesActivity.nm.cancel(45612);
+					}
+					DeviceServicesActivity.stress_text.setText("Stress Level is Good");
 				}
-				DeviceServicesActivity.stress_text.setText("Stress Level is High");
-			}else{
-				if(stressThreshold < 1600 && stressThreshold > 0) {
-					stressThreshold--;
-					DeviceServicesActivity.nm.cancel(45612);
-				}
-				DeviceServicesActivity.stress_text.setText("Stress Level is Good");
+
 			}
-		}
 
-		if(RRValues.size() == 7200){
-			RMSSD.add(HRVValues[2]);
-			SDNN.add(HRVValues[1]);
+			if(RRValues.size() == 1800){
+				RMSSD.add(HRVValues[2]);
+				SDNN.add(HRVValues[1]);
+				RRValues.clear();
+			}
+			Log.e( "Recording Status", "Recording");
+		}else{
+			DeviceServicesActivity.recordingStatus.setContentTitle("Activity Detected. Recording Paused");
+			Log.e( "Recording Status", "Paused");
+			DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.recordingStatus.build());
 			RRValues.clear();
 		}
-
-
+		Log.e( "ActivityRecogition", "Movement Status: " + isUserStill);
+		Log.e( "RR-Values Size", "RR-Values: " + RRValues.size());
 
 		return "\nHeart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"

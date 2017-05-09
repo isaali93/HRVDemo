@@ -32,7 +32,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +48,9 @@ import android.widget.TextView;
 import java.util.List;
 
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
 import com.sample.hrv.R;
 import com.sample.hrv.adapters.BleServicesAdapter;
 import com.sample.hrv.adapters.BleServicesAdapter.OnServiceItemClickListener;
@@ -60,10 +66,11 @@ import com.sample.hrv.sensor.BleSensors;
  * communicates with {@code BleService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceServicesActivity extends Activity {
+public class DeviceServicesActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private final static String TAG = DeviceServicesActivity.class.getSimpleName();
 
     public static NotificationCompat.Builder notification;
+    public static NotificationCompat.Builder recordingStatus;
     public static NotificationManager nm;
 
     public static TextView stress_text;
@@ -92,6 +99,8 @@ public class DeviceServicesActivity extends Activity {
     private BleSensor<?> heartRateSensor;
 
 	private OnServiceItemClickListener serviceListener;
+
+    public GoogleApiClient mApiClient;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -256,13 +265,18 @@ public class DeviceServicesActivity extends Activity {
 
         notification = new NotificationCompat.Builder(this);
         notification.setAutoCancel(true);
-
         notification.setSmallIcon(R.drawable.ic_launcher);
         notification.setTicker("HRV Stress Demo");
         notification.setWhen(System.currentTimeMillis());
         notification.setContentTitle("Your Stress Level is High!");
         notification.setContentText("Please open application for some tips to manage it.");
         notification.setDefaults(Notification.DEFAULT_VIBRATE);
+
+        recordingStatus = new NotificationCompat.Builder(this);
+        recordingStatus.setAutoCancel(true);
+        recordingStatus.setSmallIcon(R.drawable.ic_launcher);
+        recordingStatus.setTicker("HRV Stress Demo");
+        recordingStatus.setWhen(System.currentTimeMillis());
 
         Intent notificationIntent = new Intent(this, DeviceServicesActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -276,6 +290,35 @@ public class DeviceServicesActivity extends Activity {
 
         final Intent gattServiceIntent = new Intent(this, BleService.class);
         bindService(gattServiceIntent, serviceConnection, BIND_AUTO_CREATE);
+
+        //Activity Detection
+        mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(ActivityRecognition.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        mApiClient.connect();
+    }
+
+
+    //Activity Detection
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Intent intent = new Intent( this, ActivityRecognizedService.class );
+        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 10000, pendingIntent );
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     @Override

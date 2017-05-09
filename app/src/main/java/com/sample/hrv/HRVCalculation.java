@@ -51,7 +51,7 @@ public class HRVCalculation implements Runnable {
             RRDSum += RRDSq;
         }
 
-        RRDDiv = RRDSum/RRValues.size();
+        RRDDiv = RRDSum/(RRValues.size()-1);
         RMSSD = (float)Math.sqrt(RRDDiv);
         HRV[2] = (int)RMSSD;
 
