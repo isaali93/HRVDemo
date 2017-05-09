@@ -15,11 +15,6 @@ import com.sample.hrv.DeviceScanActivity;
 import com.sample.hrv.DeviceServicesActivity;
 import com.sample.hrv.HRVCalculation;
 
-import org.w3c.dom.Text;
-
-import static java.lang.Math.max;
-import static java.lang.Math.pow;
-
 /**
  * Created by  by olli on 3/28/2014.
  */
@@ -179,12 +174,12 @@ public class BleHeartRateSensor extends BleSensor<float[]> {
 			Log.e( "Recording Status", "Recording");
 		}else{
 			DeviceServicesActivity.recordingStatus.setContentTitle("Activity Detected. Recording Paused");
-			Log.e( "Recording Status", "Paused");
+			//Log.e( "Recording Status", "Paused");
 			DeviceServicesActivity.nm.notify(45612, DeviceServicesActivity.recordingStatus.build());
 			RRValues.clear();
 		}
-		Log.e( "ActivityRecogition", "Movement Status: " + isUserStill);
-		Log.e( "RR-Values Size", "RR-Values: " + RRValues.size());
+		//Log.e( "ActivityRecogition", "Movement Status: " + isUserStill);
+		//Log.e( "RR-Values Size", "RR-Values: " + RRValues.size());
 
 		return "\nHeart Rate=" + data[0] + " bpm"
 			+ "\nMin HR=" + minHR + " bpm" + "\nMax HR=" + maxHR + " bpm"
